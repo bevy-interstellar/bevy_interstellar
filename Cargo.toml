@@ -1,0 +1,46 @@
+[workspace]
+resolver = "2"
+
+[workspace.package]
+version = "0.0.0"
+edition = "2021"
+authors = ["Yongda Fan"]
+
+[workspace.dependencies]
+# game engine
+bevy = { version = "0.9.1"}
+# physics engine
+rapier3d = { version = "0.17.1", features = ["simd-nightly", "parallel"] }
+nalgebra = { version = "*", features = ["convert-glam022"] } # bevy use glam 0.2.2
+# serialization
+serde = { version = "1.0", features = ["derive"] }
+# random
+rand = { version = "0.8.5", features = ["serde1", "simd_support"] }
+rand_xoshiro = { version = "0.6.0", features = ["serde1"] }
+rand_distr = { version = "0.4.3" }
+# other
+nohash-hasher = { version = "0.2.0" }
+once_cell = { version = "1.17.1" }
+
+[package]
+name = "bevy_interstellar"
+description = "A space strategy game developed using Bevy game engine."
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+bevy = { workspace = true }
+server = { path = "./server" }
+# utils = { path = "./utils" } 
+# physics = { path = "./physics"}
+# galaxy_map = { path = "./galaxy_map" }
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+lto = true

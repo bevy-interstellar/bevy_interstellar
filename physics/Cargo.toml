@@ -1,0 +1,13 @@
+[package]
+name = "physics"
+description = "A crate contains code related to collision, raycasting & interpolation."
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = { workspace = true }
+rapier3d = { workspace = true }
+nalgebra = { workspace = true } # for nalgebra glam interpolation
