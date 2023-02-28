@@ -8,19 +8,23 @@ authors = ["Yongda Fan"]
 
 [workspace.dependencies]
 # game engine
-bevy = { version = "0.9.1"}
+bevy = { version = "0.9.1", features = ["serialize"] }
 # physics engine
 rapier3d = { version = "0.17.1", features = ["simd-nightly", "parallel"] }
 nalgebra = { version = "*", features = ["convert-glam022"] } # bevy use glam 0.2.2
 # serialization
 serde = { version = "1.0", features = ["derive"] }
+uuid = { version = "1.3.0", features = ["v1", "v4", "v5"] }
 # random
 rand = { version = "0.8.5", features = ["serde1", "simd_support"] }
 rand_xoshiro = { version = "0.6.0", features = ["serde1"] }
 rand_distr = { version = "0.4.3" }
 # other
 nohash-hasher = { version = "0.2.0" }
+fxhash = { version = "0.2.1" }
+bimap = { version = "0.6.2" }
 once_cell = { version = "1.17.1" }
+paste = { version = "1.0.11" }
 
 [package]
 name = "bevy_interstellar"

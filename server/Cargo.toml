@@ -15,10 +15,13 @@ rapier3d = { workspace = true }
 nalgebra = { workspace = true } # for nalgebra-glam interpolation 
 # serialization
 serde = { workspace = true } 
+uuid = { workspace = true }
 # random
 rand = { workspace = true }
 rand_xoshiro = { workspace = true }
 rand_distr = { workspace = true }
 # other
-nohash-hasher = { workspace = true }
+fxhash = { workspace = true }
+bimap = { workspace = true }
 once_cell = { workspace = true}
+paste = { workspace = true }

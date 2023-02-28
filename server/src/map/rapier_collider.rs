@@ -10,7 +10,7 @@ use rapier3d::prelude::*;
 #[derive(Component, Debug, Copy, Clone)]
 pub struct RapierCollider(ColliderHandle);
 
-// //////////////////////// Resource ////////////////////////
+//////////////////////// Resource ////////////////////////
 
 /// the engine for collision detection, used at L3 map.
 ///
