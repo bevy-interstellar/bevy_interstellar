@@ -24,7 +24,7 @@ pub struct HillSphere(f32);
 
 impl HillSphere {
     /// an approximation of the hill sphere radius, use equation
-    /// `a * (m / 3M)^(1/3) and pick a, M as constant.
+    /// $$a \times \sqrt[3]{\frac{m}{3M}}$$ and pick a, M as constant.
     pub fn new(mass: f32) -> f32 {
         mass.powf(1. / 3.)
     }

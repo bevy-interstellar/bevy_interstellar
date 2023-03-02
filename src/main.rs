@@ -6,7 +6,7 @@ fn main() {
         // external plugins
         .add_plugins(DefaultPlugins)
         // resources
-        .insert_resource(OIdTable::new())
+        .insert_resource(OidTable::new())
         // events
         // system
         // .add_startup_system(initialize_galaxy_map_system)

@@ -174,6 +174,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "atomic-polyfill"
+version = "0.1.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e3ff7eb3f316534d83a8a2c3d1674ace8a5a71198eba31e2e2b597833f699b28"
+dependencies = [
+ "critical-section",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -997,6 +1006,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "cobs"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67ba02a97a2bd10f4b59b25c7973101c79642302776489e030cd13cdab09ed15"
+
+[[package]]
 name = "cocoa"
 version = "0.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1079,6 +1094,26 @@ checksum = "a06aeb73f470f66dcdbf7223caeebb85984942f22f1adb2a088cf9668146bbbc"
 dependencies = [
  "cfg-if",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "const_format"
+version = "0.2.30"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7309d9b4d3d2c0641e018d449232f2e28f1b22933c137f157d3dbc14228b8c0e"
+dependencies = [
+ "const_format_proc_macros",
+]
+
+[[package]]
+name = "const_format_proc_macros"
+version = "0.2.29"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d897f47bf7270cf70d370f8f98c1abb6d2d4cf60a6845d30e05bfb90c6568650"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "unicode-xid",
 ]
 
 [[package]]
@@ -1180,6 +1215,12 @@ checksum = "b540bd8bc810d3885c6ea91e2018302f68baba2129ab3e88f32389ee9370880d"
 dependencies = [
  "cfg-if",
 ]
+
+[[package]]
+name = "critical-section"
+version = "1.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6548a0ad5d2549e111e1f6a11a6c2e2d00ce6a3dafe22948d67c2b443f775e52"
 
 [[package]]
 name = "crossbeam"
@@ -1691,6 +1732,20 @@ checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
 dependencies = [
  "ahash",
  "serde",
+]
+
+[[package]]
+name = "heapless"
+version = "0.7.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "db04bc24a18b9ea980628ecf00e6c0264f3c1426dac36c00cb49b6fbad8b0743"
+dependencies = [
+ "atomic-polyfill",
+ "hash32",
+ "rustc_version 0.4.0",
+ "serde",
+ "spin",
+ "stable_deref_trait",
 ]
 
 [[package]]
@@ -2535,6 +2590,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "postcard"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfa512cd0d087cc9f99ad30a1bf64795b67871edbead083ffc3a4dfafa59aa00"
+dependencies = [
+ "cobs",
+ "const_format",
+ "heapless",
+ "postcard-derive",
+ "serde",
+]
+
+[[package]]
+name = "postcard-derive"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fc4b01218787dd4420daf63875163a787a78294ad48a24e9f6fa8c6507759a79"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "pp-rs"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2802,7 +2881,16 @@ version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "138e3e0acb6c9fb258b19b67cb8abd63c00679d2851805ea151465464fe9030a"
 dependencies = [
- "semver",
+ "semver 0.9.0",
+]
+
+[[package]]
+name = "rustc_version"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bfa0f585226d2e68097d4f95d113b15b83a82e819ab25717ec0590d9584ef366"
+dependencies = [
+ "semver 1.0.16",
 ]
 
 [[package]]
@@ -2851,6 +2939,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "semver"
+version = "1.0.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "58bc9567378fc7690d6b2addae4e60ac2eeea07becb2c64b9f218b53865cba2a"
+
+[[package]]
 name = "semver-parser"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2897,6 +2991,7 @@ dependencies = [
  "nalgebra",
  "once_cell",
  "paste",
+ "postcard",
  "rand",
  "rand_distr",
  "rand_xoshiro",
@@ -2989,6 +3084,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "spin"
+version = "0.9.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7dccf47db1b41fa1573ed27ccf5e08e3ca771cb994f776668c5ebda893b248fc"
+dependencies = [
+ "lock_api",
+]
+
+[[package]]
 name = "spirv"
 version = "0.2.0+1.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2997,6 +3101,12 @@ dependencies = [
  "bitflags",
  "num-traits",
 ]
+
+[[package]]
+name = "stable_deref_trait"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "static_assertions"
@@ -3011,7 +3121,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d022496b16281348b52d0e30ae99e01a73d737b2f45d38fed4edf79f9325a1d5"
 dependencies = [
  "discard",
- "rustc_version",
+ "rustc_version 0.2.3",
  "stdweb-derive",
  "stdweb-internal-macros",
  "stdweb-internal-runtime",

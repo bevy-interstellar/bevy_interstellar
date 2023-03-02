@@ -1,9 +1,12 @@
 {
     "cSpell.words": [
         "Astro",
+        "confusables",
         "fxhash",
         "hasher",
         "nohash",
+        "Tolman",
+        "Volkoff",
         "xoshiro"
     ],
     "Codegeex.EnableExtension": false

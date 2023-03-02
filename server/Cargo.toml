@@ -14,7 +14,8 @@ bevy = { workspace = true }
 rapier3d = { workspace = true }
 nalgebra = { workspace = true } # for nalgebra-glam interpolation 
 # serialization
-serde = { workspace = true } 
+serde = { workspace = true }
+postcard = { workspace = true } 
 uuid = { workspace = true }
 # random
 rand = { workspace = true }

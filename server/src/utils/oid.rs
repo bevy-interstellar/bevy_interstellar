@@ -15,23 +15,33 @@ use uuid::Uuid;
 ///
 /// S/L data
 #[derive(Component, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct OId(Uuid);
+pub struct Oid(Uuid);
 
-impl fmt::Debug for OId {
+impl fmt::Debug for Oid {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.0.fmt(f)
     }
 }
 
-impl OId {
-    /// create a StableId based on randomness, backed by UUID V4
+impl Default for Oid {
+    fn default() -> Self {
+        Self::nil()
+    }
+}
+
+impl Oid {
+    pub fn nil() -> Self {
+        Self(Uuid::nil())
+    }
+
+    /// create a Oid based on randomness, backed by UUID V4
     pub fn v4() -> Self {
         let id = Self(Uuid::new_v4());
         info!("generate v4 id {:?}", id);
         id
     }
 
-    /// create a StableId based on hash value of the data, backed by UUID V5
+    /// create a Oid based on hash value of the data, backed by UUID V5
     pub fn v5(data: &[u8]) -> Self {
         let id = Self(Uuid::new_v5(&Uuid::NAMESPACE_OID, data));
         info!("generate v5 id {:?}", id);
@@ -43,33 +53,33 @@ impl OId {
 ///
 /// CON data
 #[derive(Resource, Debug, Clone)]
-pub struct OIdTable {
-    data: FxHashMap<OId, Entity>,
+pub struct OidTable {
+    data: FxHashMap<Oid, Entity>,
     rebuild_counter: usize,
 }
 
-impl Default for OIdTable {
+impl Default for OidTable {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl OIdTable {
+impl OidTable {
     /// create a empty table
     pub fn new() -> Self {
-        OIdTable {
+        OidTable {
             data: Default::default(),
             rebuild_counter: 0,
         }
     }
 
     /// get the `Entity` corresponding to `OId`
-    pub fn query(&self, id: &OId) -> Option<Entity> {
+    pub fn query(&self, id: &Oid) -> Option<Entity> {
         self.data.get(id).cloned()
     }
 
     /// insert a `OId`, `Entity` pair to the table
-    pub fn insert(&mut self, id: OId, entity: Entity) {
+    pub fn insert(&mut self, id: Oid, entity: Entity) {
         info!("insert {:?} - {:?} into id table.", id, entity);
         self.data.insert(id, entity);
     }
@@ -87,7 +97,7 @@ impl OIdTable {
     }
 
     /// rebuild the table
-    pub fn rebuild(&mut self, iter: impl Iterator<Item = (Entity, OId)>) {
+    pub fn rebuild(&mut self, iter: impl Iterator<Item = (Entity, Oid)>) {
         self.data.clear();
         self.rebuild_counter = 0;
 
@@ -104,9 +114,9 @@ impl OIdTable {
 /// - must run before `oid_table_rebuild_system`
 /// - must run before any conversion from `OId` to `Entity`
 pub fn oid_table_update_system(
-    changed: Query<(Entity, &OId), Changed<OId>>,
-    removed: RemovedComponents<OId>,
-    mut table: ResMut<OIdTable>,
+    changed: Query<(Entity, &Oid), Changed<Oid>>,
+    removed: RemovedComponents<Oid>,
+    mut table: ResMut<OidTable>,
 ) {
     for id in changed.iter() {
         table.as_mut().insert(*id.1, id.0)
@@ -115,7 +125,7 @@ pub fn oid_table_update_system(
     table.as_mut().remove_entry(removed.iter().len());
 }
 
-pub fn oid_table_rebuild_system(all: Query<(Entity, &OId)>, mut table: ResMut<OIdTable>) {
+pub fn oid_table_rebuild_system(all: Query<(Entity, &Oid)>, mut table: ResMut<OidTable>) {
     if table.as_ref().should_rebuild() {
         table.as_mut().rebuild(all.iter().map(|e| (e.0, *e.1)));
     }

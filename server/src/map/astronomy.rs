@@ -10,3 +10,11 @@ pub struct AstroMass(f32);
 /// the radius of an astronomical object in local map, unit in R☉
 #[derive(Component, Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct AstroRadius(f32);
+
+/// the luminosity of the star, in L☉
+#[derive(Component, Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct Luminosity(f32);
+
+/// the surface temperature of the star, in kelvin
+#[derive(Component, Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct Temperature(f32);
