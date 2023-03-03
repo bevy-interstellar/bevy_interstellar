@@ -14,15 +14,15 @@ bevy = { workspace = true }
 rapier3d = { workspace = true }
 nalgebra = { workspace = true } # for nalgebra-glam interpolation 
 # serialization
-serde = { workspace = true }
-postcard = { workspace = true } 
+serde = { workspace = true } 
+bincode = { workspace = true }
 uuid = { workspace = true }
+sha1 = { workspace = true }
 # random
 rand = { workspace = true }
 rand_xoshiro = { workspace = true }
 rand_distr = { workspace = true }
 # other
 fxhash = { workspace = true }
-bimap = { workspace = true }
 once_cell = { workspace = true}
 paste = { workspace = true }

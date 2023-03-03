@@ -12,9 +12,8 @@
 //! - AstroRadius: the radius of star
 
 use super::astronomy::*;
-use crate::utils::oid::Oid;
+use crate::utils::{oid::Oid, property::Property};
 use bevy::prelude::*;
-use postcard;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
@@ -27,9 +26,6 @@ pub enum StarCategory {
     /// a main sequence star with carbon–nitrogen–oxygen cycle fusion reaction
     /// in its core
     MainSeqCno,
-    /// a main sequence star with triple-alpha process fusion reaction in its
-    /// core
-    MainSeqTα,
     /// a giant star whose luminosity is below 1380 L☉
     Giant,
     /// a giant star whose luminosity is between 1380 L☉ and 138000 L☉
@@ -54,7 +50,7 @@ impl StarCategory {
     /// hydrogen into helium to produce energy
     pub fn main_sequence(&self) -> bool {
         match self {
-            &Self::MainSeqPp | &Self::MainSeqCno | &Self::MainSeqTα => true,
+            &Self::MainSeqPp | &Self::MainSeqCno => true,
             _ => false,
         }
     }
@@ -87,10 +83,9 @@ impl StarCategory {
     }
 }
 
-#[derive(Clone, Copy, Serialize, Deserialize)]
-pub struct StarObject {
-    id: Oid,
-    transform: Transform,
+/// the natural property of a star
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+pub struct StarProperty {
     mass: AstroMass,
     radius: AstroRadius,
     luminosity: Luminosity,
@@ -98,43 +93,76 @@ pub struct StarObject {
     category: StarCategory,
 }
 
-#[derive(Serialize, Deserialize)]
-struct StarObjectLite(
-    AstroMass,
-    AstroRadius,
-    Luminosity,
-    Temperature,
-    StarCategory,
-);
+impl Property for StarProperty {}
 
-impl Into<StarObject> for StarObjectLite {
-    fn into(self) -> StarObject {
-        let mut buf = [0_u8; 40];
-        let data = postcard::to_slice(&(self.0, self.1, self.2, self.3, self.4), &mut buf).unwrap();
-
-        StarObject {
-            id: Oid::v5(&data),
-            transform: Default::default(),
-            mass: self.0,
-            radius: self.1,
-            luminosity: self.2,
-            temperature: self.3,
-            category: self.4,
-        }
-    }
+/// a star is a non-moving astronomical object with respect to solar system
+/// reference. this is the object-oriented representation of the star, used for
+/// generation & serialization.
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+pub struct StarObject {
+    id: Oid,
+    property: StarProperty,
+    transform: Transform,
 }
 
 impl StarObject {
-    pub fn load(save_id: Oid) -> Self {
+    pub fn load(save: Oid) -> Self {
         todo!()
     }
 
-    pub fn save(&self, save_id: Oid) {
+    pub fn save(&self, save: Oid) {}
+
+    /// pre-condition: 0.1 < initial_mass < 120.0
+    fn main_sequence(initial_mass: f32) -> StarProperty {
+        let mass = initial_mass;
+
+        // from paper DOI 10.1007/BF00639097
+        let category = if mass < 1.66 {
+            StarCategory::MainSeqPp
+        } else {
+            StarCategory::MainSeqCno
+        };
+
+        let radius = if mass < 1.66 {
+            0.89 * mass.powf(0.89)
+        } else {
+            1.01 * mass.powf(0.57)
+        };
+
+        let luminosity = if mass < 0.7 {
+            0.20 * mass.powf(2.50)
+        } else {
+            1.15 * mass.powf(3.36)
+        };
+
+        // formula: L = R^2 * T^4, and use sun surface temperature as 5778 K
+        let temperature = (luminosity.powf(0.25) / radius.powf(0.5)) * 5778.0;
+
+        StarProperty {
+            mass: AstroMass::new(mass),
+            radius: AstroRadius::new(radius),
+            luminosity: Luminosity::new(luminosity),
+            temperature: Temperature::new(temperature),
+            category: category,
+        }
+    }
+
+    /// pre-condition: 0.2 < initial_mass < 300.0
+    pub fn giant(initial_mass: f32) -> StarProperty {
         todo!()
     }
 
     pub fn random(rng: &mut impl Rng) -> Self {
-        let mut star: StarObject = main_seq::generate(rng).into();
-        star
+        let property = Self::main_sequence(1.0);
+
+        // life = (M / MO)^{-2.5} in solar life time, 10 * 1e9 year,
+        // giant life = 1/10 of life
+        // compact star
+
+        StarObject {
+            id: property.id(),
+            property: property,
+            transform: Default::default(),
+        }
     }
 }

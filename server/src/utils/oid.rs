@@ -4,6 +4,7 @@ use bevy::ecs::prelude::*;
 use bevy::log::*;
 use fxhash::FxHashMap;
 use serde::{Deserialize, Serialize};
+use sha1::{Digest, Sha1};
 use uuid::Uuid;
 
 /// store the id for an game object, it's stable across the game session. this
@@ -30,6 +31,10 @@ impl Default for Oid {
 }
 
 impl Oid {
+    pub fn from_uuid(uuid: Uuid) -> Self {
+        Self(uuid)
+    }
+
     pub fn nil() -> Self {
         Self(Uuid::nil())
     }
@@ -46,6 +51,34 @@ impl Oid {
         let id = Self(Uuid::new_v5(&Uuid::NAMESPACE_OID, data));
         info!("generate v5 id {:?}", id);
         id
+    }
+
+    pub fn v5_from_write<F>(consumer: F) -> Self
+    where
+        F: FnOnce(&mut Sha1Write) -> (),
+    {
+        let mut write = Sha1Write(Sha1::new());
+        consumer(&mut write);
+        let hash: [u8; 20] = write.0.finalize().into();
+
+        let mut bytes = [0; 16];
+        bytes.copy_from_slice(&hash[..16]);
+        let id = Self(uuid::Builder::from_sha1_bytes(bytes).into_uuid());
+        info!("generate v5 id {:?}", id);
+        id
+    }
+}
+
+pub struct Sha1Write(Sha1);
+
+impl std::io::Write for Sha1Write {
+    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+        self.0.update(buf);
+        Ok(buf.len())
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        Ok(())
     }
 }
 
