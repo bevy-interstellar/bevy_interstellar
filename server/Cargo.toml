@@ -10,6 +10,7 @@ authors = { workspace = true }
 [dependencies]
 # game engine
 bevy = { workspace = true }
+iyes_loopless = { workspace = true }
 # physics engine
 rapier3d = { workspace = true }
 nalgebra = { workspace = true } # for nalgebra-glam interpolation 
@@ -26,3 +27,6 @@ rand_distr = { workspace = true }
 fxhash = { workspace = true }
 once_cell = { workspace = true}
 paste = { workspace = true }
+
+[dev-dependencies]
+float-cmp = "0.9.0"

@@ -1,21 +1,24 @@
 //! A module for all stars, stars is defined as non-moving astronomical object
 //! with respect to reference of the solar system. There are different type of
 //! stars
-//! - BlackHole
-//! - DegenerateStar (QuarkStar, NeutronStar, WhiteDwarf, BlackDwarf, etc)
-//! - MainSequenceStar (Blue Giant, RedDwarf, BrownDwarf, etc)
-//! - GiantStar (HyperGiant, SubGiant, etc)
-//!
-//! a star include the following components
-//! - Transform (and GlobalTransform): the translation & rotation in the L3 map
-//! - AstroMass: the mass of star
-//! - AstroRadius: the radius of star
+//! # components
+//! ## internal properties
+//! - AstroMass
+//! - AstroRadius
+//! - Luminosity
+//! - Temperature: the surface temperature
+//! - StarCategory
+//! ## external properties
+//! - Oid: from internal property
+//! - Transform: local coordinate
+//! ## constructed at runtime
+//! - GlobalTransform
 
-use super::astronomy::*;
-use crate::utils::{oid::Oid, property::Property};
-use bevy::prelude::*;
-use rand::Rng;
+use crate::utils::oid::Oid;
+use bevy::prelude::{Commands, Component, Entity, GlobalTransform, Transform};
 use serde::{Deserialize, Serialize};
+
+pub use super::astronomy::{AstroMass, AstroRadius, Luminosity, Temperature};
 
 /// the category of the star
 #[derive(Component, Debug, Clone, Copy, Serialize, Deserialize)]
@@ -77,92 +80,54 @@ impl StarCategory {
     pub fn compact(&self) -> bool {
         match self {
             &Self::BlackHole => true,
-            _ if self.degenerate() => true,
+            x if x.degenerate() => true,
             _ => false,
         }
     }
 }
-
-/// the natural property of a star
-#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
-pub struct StarProperty {
-    mass: AstroMass,
-    radius: AstroRadius,
-    luminosity: Luminosity,
-    temperature: Temperature,
-    category: StarCategory,
-}
-
-impl Property for StarProperty {}
 
 /// a star is a non-moving astronomical object with respect to solar system
 /// reference. this is the object-oriented representation of the star, used for
 /// generation & serialization.
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct StarObject {
-    id: Oid,
-    property: StarProperty,
-    transform: Transform,
+    pub id: Oid,
+
+    pub mass: AstroMass,
+    pub radius: AstroRadius,
+    pub luminosity: Luminosity,
+    pub temperature: Temperature,
+    pub category: StarCategory,
+
+    pub transform: Transform,
+}
+
+impl Default for StarObject {
+    fn default() -> Self {
+        Self {
+            id: Default::default(),
+            mass: AstroMass::new(0.0),
+            radius: AstroRadius::new(0.0),
+            luminosity: Luminosity::new(0.0),
+            temperature: Temperature::new(0.0),
+            category: StarCategory::MainSeqPp,
+            transform: Default::default(),
+        }
+    }
 }
 
 impl StarObject {
-    pub fn load(save: Oid) -> Self {
-        todo!()
-    }
-
-    pub fn save(&self, save: Oid) {}
-
-    /// pre-condition: 0.1 < initial_mass < 120.0
-    fn main_sequence(initial_mass: f32) -> StarProperty {
-        let mass = initial_mass;
-
-        // from paper DOI 10.1007/BF00639097
-        let category = if mass < 1.66 {
-            StarCategory::MainSeqPp
-        } else {
-            StarCategory::MainSeqCno
-        };
-
-        let radius = if mass < 1.66 {
-            0.89 * mass.powf(0.89)
-        } else {
-            1.01 * mass.powf(0.57)
-        };
-
-        let luminosity = if mass < 0.7 {
-            0.20 * mass.powf(2.50)
-        } else {
-            1.15 * mass.powf(3.36)
-        };
-
-        // formula: L = R^2 * T^4, and use sun surface temperature as 5778 K
-        let temperature = (luminosity.powf(0.25) / radius.powf(0.5)) * 5778.0;
-
-        StarProperty {
-            mass: AstroMass::new(mass),
-            radius: AstroRadius::new(radius),
-            luminosity: Luminosity::new(luminosity),
-            temperature: Temperature::new(temperature),
-            category: category,
-        }
-    }
-
-    /// pre-condition: 0.2 < initial_mass < 300.0
-    pub fn giant(initial_mass: f32) -> StarProperty {
-        todo!()
-    }
-
-    pub fn random(rng: &mut impl Rng) -> Self {
-        let property = Self::main_sequence(1.0);
-
-        // life = (M / MO)^{-2.5} in solar life time, 10 * 1e9 year,
-        // giant life = 1/10 of life
-        // compact star
-
-        StarObject {
-            id: property.id(),
-            property: property,
-            transform: Default::default(),
-        }
+    pub fn spawn(&self, commands: &mut Commands) -> Entity {
+        commands
+            .spawn_empty()
+            .insert(self.id)
+            .insert(self.mass)
+            .insert(self.radius)
+            .insert(self.luminosity)
+            .insert(self.temperature)
+            .insert(self.category)
+            .insert(self.transform)
+            .insert(GlobalTransform::default())
+            .id()
     }
 }

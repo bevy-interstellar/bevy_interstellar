@@ -2,6 +2,7 @@ use core::fmt;
 
 use bevy::ecs::prelude::*;
 use bevy::log::*;
+use bincode::serde::encode_into_std_write;
 use fxhash::FxHashMap;
 use serde::{Deserialize, Serialize};
 use sha1::{Digest, Sha1};
@@ -66,6 +67,12 @@ impl Oid {
         let id = Self(uuid::Builder::from_sha1_bytes(bytes).into_uuid());
         info!("generate v5 id {:?}", id);
         id
+    }
+
+    pub fn v5_from_object<T: Serialize>(obj: &T) -> Self {
+        Oid::v5_from_write(|w| {
+            encode_into_std_write(obj, w, crate::utils::SERDE_CONFIG).expect("fail to serialize.");
+        })
     }
 }
 
@@ -144,9 +151,8 @@ impl OidTable {
 ///
 /// schedule requirement:
 /// - must run after any modification for `OId`
-/// - must run before `oid_table_rebuild_system`
-/// - must run before any conversion from `OId` to `Entity`
-pub fn oid_table_update_system(
+/// - must run before `system_oid_table_rebuild`
+pub fn system_oid_table_update(
     changed: Query<(Entity, &Oid), Changed<Oid>>,
     removed: RemovedComponents<Oid>,
     mut table: ResMut<OidTable>,
@@ -158,7 +164,12 @@ pub fn oid_table_update_system(
     table.as_mut().remove_entry(removed.iter().len());
 }
 
-pub fn oid_table_rebuild_system(all: Query<(Entity, &Oid)>, mut table: ResMut<OidTable>) {
+/// a system to rebuild the `OidTable` when it contains too many died entry.
+///
+/// schedule requirement:
+/// - must run after `system_oid_table_update`
+/// - must run before any conversion from `OId` to `Entity`
+pub fn system_oid_table_rebuild(all: Query<(Entity, &Oid)>, mut table: ResMut<OidTable>) {
     if table.as_ref().should_rebuild() {
         table.as_mut().rebuild(all.iter().map(|e| (e.0, *e.1)));
     }

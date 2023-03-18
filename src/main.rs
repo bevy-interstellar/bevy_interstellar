@@ -1,15 +1,13 @@
 use bevy::prelude::*;
+use client::map::star::*;
 use server::utils::oid::*;
 
 fn main() {
     App::new()
         // external plugins
         .add_plugins(DefaultPlugins)
-        // resources
-        .insert_resource(OidTable::new())
-        // events
-        // system
-        // .add_startup_system(initialize_galaxy_map_system)
-        .add_system_to_stage(CoreStage::PostUpdate, oid_table_update_system)
+        .add_startup_system(init_system)
         .run();
 }
+
+fn init_system(mut commands: Commands)

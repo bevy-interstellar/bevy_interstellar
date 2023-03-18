@@ -8,7 +8,8 @@ authors = ["Yongda Fan"]
 
 [workspace.dependencies]
 # game engine
-bevy = { version = "0.9.1", features = ["serialize"] }
+bevy = { version = "0.1.0", features = ["serialize"] }
+iyes_loopless = { version = "0.9.1" }
 # physics engine
 rapier3d = { version = "0.17.1", features = ["simd-nightly", "parallel"] }
 nalgebra = { version = "*", features = ["convert-glam022"] } # bevy use glam 0.2.2
@@ -38,6 +39,7 @@ authors = { workspace = true }
 [dependencies]
 bevy = { workspace = true }
 server = { path = "./server" }
+client = { path = "./client" }
 # utils = { path = "./utils" } 
 # physics = { path = "./physics"}
 # galaxy_map = { path = "./galaxy_map" }

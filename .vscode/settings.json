@@ -3,12 +3,16 @@
         "Astro",
         "bincode",
         "confusables",
+        "despawn",
         "fxhash",
         "hasher",
         "nohash",
+        "powf",
         "Tolman",
+        "upls",
         "Volkoff",
-        "xoshiro"
+        "xoshiro",
+        "ZAMS"
     ],
-    "Codegeex.EnableExtension": false
+    "Codegeex.EnableExtension": true
 }

@@ -1,0 +1,17 @@
+[package]
+name = "client"
+description = "A crate handle user input & graphics."
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+server = { path = "../server" }
+bevy = { workspace = true }
+iyes_loopless = { workspace = true }
+rapier3d = { workspace = true }
+nalgebra = { workspace = true } # for nalgebra-glam interpolation 
+
+
