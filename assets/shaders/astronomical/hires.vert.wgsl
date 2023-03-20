@@ -1,6 +1,7 @@
 #import bevy_pbr::mesh_view_bindings
 #import bevy_pbr::mesh_bindings
 #import bevy_pbr::mesh_functions
+#import astro::common
 
 struct HiResSiriusBMaterial {
     radius: f32,

@@ -1,4 +1,4 @@
-#import noise::prelude
+#import bevy_pbr::mesh_view_bindings
 #import astro::common
 
 struct HiResSiriusBMaterial {
@@ -18,7 +18,9 @@ struct FragmentIn {
 
 @fragment
 fn fragment(frag: FragmentIn) -> @location(0) vec4<f32> {
-    let color = astro_kelvin_to_rgb(material.temperature);
+    let c = astro_kelvin_to_rgb(material.temperature);
+    let d = distance(frag.world_position.xyz, view.world_position) * LUMINOSITY_DISTANCE_CORRECTION_FACTOR;
+    let l = material.luminosity / pow(d, 2.0);
 
-    return vec4(color, 1.0);
+    return vec4(c * l, 1.0);
 }

@@ -4,14 +4,10 @@
 
 #import noise::prelude
 
-const LUMINOSITY_FACTOR = 16.0;
+const LUMINOSITY_DISTANCE_CORRECTION_FACTOR = 0.00465047 * 0.2;
 
 fn surface(l: f32, x: vec4<f32>) -> f32 {
     return 0.0;
-}
-
-fn astro_rsol2au(x: f32) -> f32 {
-    return x * 0.00465047;
 }
 
 fn astro_kelvin_to_rgb(t: f32) -> vec3<f32> {
