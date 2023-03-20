@@ -2,6 +2,18 @@
 #ifndef IMPORT_ASTRO_COMMON
 #define IMPORT_ASTRO_COMMON
 
+#import noise::prelude
+
+const LUMINOSITY_FACTOR = 16.0;
+
+fn surface(l: f32, x: vec4<f32>) -> f32 {
+    return 0.0;
+}
+
+fn astro_rsol2au(x: f32) -> f32 {
+    return x * 0.00465047;
+}
+
 fn astro_kelvin_to_rgb(t: f32) -> vec3<f32> {
     var r: f32;
     var g: f32;
