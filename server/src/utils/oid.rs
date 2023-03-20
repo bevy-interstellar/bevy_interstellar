@@ -161,7 +161,7 @@ pub fn system_oid_table_update(
         table.as_mut().insert(*id.1, id.0)
     }
 
-    table.as_mut().remove_entry(removed.iter().len());
+    table.as_mut().remove_entry(removed.len());
 }
 
 /// a system to rebuild the `OidTable` when it contains too many died entry.

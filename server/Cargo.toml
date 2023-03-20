@@ -10,7 +10,6 @@ authors = { workspace = true }
 [dependencies]
 # game engine
 bevy = { workspace = true }
-iyes_loopless = { workspace = true }
 # physics engine
 rapier3d = { workspace = true }
 nalgebra = { workspace = true } # for nalgebra-glam interpolation 

@@ -8,11 +8,10 @@ authors = ["Yongda Fan"]
 
 [workspace.dependencies]
 # game engine
-bevy = { version = "0.1.0", features = ["serialize"] }
-iyes_loopless = { version = "0.9.1" }
+bevy = { version = "0.10.0", features = ["serialize"] }
 # physics engine
-rapier3d = { version = "0.17.1", features = ["simd-nightly", "parallel"] }
-nalgebra = { version = "*", features = ["convert-glam022"] } # bevy use glam 0.2.2
+rapier3d = { version = "0.17.2", features = ["simd-nightly", "parallel"] }
+nalgebra = { version = "*", features = ["convert-glam023"] } # bevy use glam 0.2.3
 # serialization
 serde = { version = "1.0", features = ["derive"] }
 bincode = { version = "2.0.0-rc.2", features = ["serde"]}
@@ -25,7 +24,6 @@ rand_distr = { version = "0.4.3" }
 # other
 nohash-hasher = { version = "0.2.0" }
 fxhash = { version = "0.2.1" }
-bimap = { version = "0.6.2" }
 once_cell = { version = "1.17.1" }
 paste = { version = "1.0.11" }
 
@@ -40,9 +38,6 @@ authors = { workspace = true }
 bevy = { workspace = true }
 server = { path = "./server" }
 client = { path = "./client" }
-# utils = { path = "./utils" } 
-# physics = { path = "./physics"}
-# galaxy_map = { path = "./galaxy_map" }
 
 [profile.dev]
 opt-level = 1

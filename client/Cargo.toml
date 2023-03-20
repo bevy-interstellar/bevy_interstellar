@@ -10,8 +10,9 @@ authors = { workspace = true }
 [dependencies]
 server = { path = "../server" }
 bevy = { workspace = true }
-iyes_loopless = { workspace = true }
 rapier3d = { workspace = true }
 nalgebra = { workspace = true } # for nalgebra-glam interpolation 
 
+float-ord = "0.3.2"
+heapless = "0.7.16"
 
