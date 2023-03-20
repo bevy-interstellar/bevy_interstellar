@@ -1,4 +1,6 @@
 #define_import_path astro::common
+#ifndef IMPORT_ASTRO_COMMON
+#define IMPORT_ASTRO_COMMON
 
 fn astro_kelvin_to_rgb(t: f32) -> vec3<f32> {
     var r: f32;
@@ -9,14 +11,14 @@ fn astro_kelvin_to_rgb(t: f32) -> vec3<f32> {
     if t < 6600.0 {
         r = 1.0;
     } else {
-        r = 1.2929362 * (t / 100.0 - 60.0).pow(-0.1332048);
+        r = pow(0.012929362 * (t - 6000.0), -0.1332048);
     }
 
     // green
     if t < 6600.0 {
         g = 0.3900816 * log(t / 100.0) - 0.6318414;
     } else {
-        g = 1.1298909 * (t / 100.0 - 60.0).pow(-0.07551485);
+        g = pow(0.011298909 * (t - 6000.0), -0.07551485);
     }
 
     // blue 
@@ -34,3 +36,5 @@ fn astro_kelvin_to_rgb(t: f32) -> vec3<f32> {
 
     return vec3(r, g, b);
 }
+
+#endif
