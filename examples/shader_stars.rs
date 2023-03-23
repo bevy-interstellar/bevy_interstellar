@@ -1,4 +1,5 @@
-use bevy::{prelude::*, reflect::TypeUuid, render::render_resource::*};
+use bevy::core_pipeline::bloom::BloomSettings;
+use bevy::prelude::*;
 
 use client::map::star::sirius_b::HiResSiriusBMaterial;
 use client::utils::sphere::CubeSphere;
@@ -10,7 +11,10 @@ struct Movable;
 fn main() {
     App::new()
         .insert_resource(Msaa::Sample4)
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(AssetPlugin {
+            watch_for_changes: true,
+            ..Default::default()
+        }))
         .add_plugin(ClientPlugin)
         .add_plugin(MaterialPlugin::<HiResSiriusBMaterial>::default())
         .add_startup_system(setup)
@@ -23,28 +27,51 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<HiResSiriusBMaterial>>,
 ) {
-    let mesh: Mesh = CubeSphere::default().into();
+    let mesh: Mesh = CubeSphere {
+        radius: 1.0,
+        resolution: 32,
+    }
+    .into();
 
     commands.spawn(MaterialMeshBundle::<HiResSiriusBMaterial> {
-        mesh: meshes.add(mesh),
+        mesh: meshes.add(mesh.clone()),
         material: materials.add(HiResSiriusBMaterial {
             radius: 1.711,
             luminosity: 25.4,
             temperature: 9940.0,
         }),
+        transform: Transform::from_xyz(-1.5, 0.0, 0.0),
         ..default()
     });
 
-    let camera_origin = commands.spawn((TransformBundle::default(), Movable)).id();
+    commands.spawn(MaterialMeshBundle::<HiResSiriusBMaterial> {
+        mesh: meshes.add(mesh.clone()),
+        material: materials.add(HiResSiriusBMaterial {
+            radius: 1.0,
+            luminosity: 1.0,
+            temperature: 5778.0,
+        }),
+        transform: Transform::from_xyz(1.5, 0.0, 0.0),
+        ..default()
+    });
 
-    let camera = commands
-        .spawn(Camera3dBundle {
-            transform: Transform::from_xyz(0.0, 0.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+    commands.spawn((
+        Camera3dBundle {
+            // from 1 AU
+            transform: Transform::from_xyz(0.0, 0.0, 1.0).looking_at(Vec3::ZERO, Vec3::Y),
+            camera: Camera {
+                hdr: true,
+                ..default()
+            },
+            projection: Projection::Perspective(PerspectiveProjection {
+                fov: std::f32::consts::PI / 8.,
+                ..default()
+            }),
             ..default()
-        })
-        .id();
-
-    commands.entity(camera_origin).add_child(camera);
+        },
+        BloomSettings::default(),
+        Movable,
+    ));
 }
 
 fn object_rotate(
@@ -66,22 +93,22 @@ fn object_rotate(
             transform.rotate_y(-time.delta_seconds());
         }
         if input.pressed(KeyCode::W) {
-            transform.translation.z += time.delta_seconds();
+            transform.translation.z -= time.delta_seconds() * 50.0;
         }
         if input.pressed(KeyCode::S) {
-            transform.translation.z -= time.delta_seconds();
+            transform.translation.z += time.delta_seconds() * 50.0;
         }
         if input.pressed(KeyCode::A) {
-            transform.translation.x += time.delta_seconds();
+            transform.translation.x -= time.delta_seconds() * 50.0;
         }
         if input.pressed(KeyCode::D) {
-            transform.translation.x -= time.delta_seconds();
+            transform.translation.x += time.delta_seconds() * 50.0;
         }
         if input.pressed(KeyCode::Space) {
-            transform.translation.y += time.delta_seconds();
+            transform.translation.y += time.delta_seconds() * 50.0;
         }
         if input.pressed(KeyCode::LShift) {
-            transform.translation.y -= time.delta_seconds();
+            transform.translation.y -= time.delta_seconds() * 50.0;
         }
     }
 }

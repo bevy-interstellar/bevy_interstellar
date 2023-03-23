@@ -4,10 +4,25 @@
 
 #import noise::prelude
 
-const LUMINOSITY_DISTANCE_CORRECTION_FACTOR = 0.00465047 * 0.2;
+const HIRES_LUMINOSITY_FACTOR = 16.0;
 
-fn surface(l: f32, x: vec4<f32>) -> f32 {
-    return 0.0;
+fn astro_surface_noise(position: vec3<f32>, time: f32) -> f32 {
+    let v = vec4(position, time);
+
+    // fractal brownian motion algorithm
+    let lacu = 1.3;
+    let gain = 0.7;
+
+    var res = 0.0;
+    var ampl = 1.0 - gain; // ensure -1.0 < res < 1.0 
+    var freq = 1.0;
+    for (var i = 0; i < 8; i++) {
+        res += ampl * noise_simplex_vec4f(freq * v);
+        freq *= lacu;
+        ampl *= gain;
+    }
+
+    return sin(res * 3.141592654 / 2.0);
 }
 
 fn astro_kelvin_to_rgb(t: f32) -> vec3<f32> {

@@ -18,9 +18,11 @@ struct FragmentIn {
 
 @fragment
 fn fragment(frag: FragmentIn) -> @location(0) vec4<f32> {
-    let c = astro_kelvin_to_rgb(material.temperature);
-    let d = distance(frag.world_position.xyz, view.world_position) * LUMINOSITY_DISTANCE_CORRECTION_FACTOR;
-    let l = material.luminosity / pow(d, 2.0);
+    let seed = material.radius * 1024.0;
 
-    return vec4(c * l, 1.0);
+    let color = astro_kelvin_to_rgb(material.temperature);
+    let distance = distance(frag.world_position.xyz, view.world_position) * 0.01;
+    let noise = astro_surface_noise(6.0 * frag.world_position.xyz / material.radius, globals.time * 0.1 + seed);
+
+    return vec4(color * (0.5 + noise * 0.5) * HIRES_LUMINOSITY_FACTOR, 1.0);
 }

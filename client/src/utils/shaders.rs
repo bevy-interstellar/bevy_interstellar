@@ -1,5 +1,4 @@
 use bevy::asset::HandleId;
-use bevy::log::*;
 use bevy::prelude::*;
 
 macro_rules! shader {
