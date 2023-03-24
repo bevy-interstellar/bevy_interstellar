@@ -1,4 +1,5 @@
 use bevy::core_pipeline::bloom::BloomSettings;
+use bevy::core_pipeline::tonemapping::Tonemapping;
 use bevy::prelude::*;
 
 use client::map::star::sirius_b::HiResSiriusBMaterial;
@@ -67,6 +68,7 @@ fn setup(
                 fov: std::f32::consts::PI / 8.,
                 ..default()
             }),
+            tonemapping: Tonemapping::TonyMcMapface,
             ..default()
         },
         BloomSettings::default(),

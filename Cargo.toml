@@ -8,7 +8,7 @@ authors = ["Yongda Fan"]
 
 [workspace.dependencies]
 # game engine
-bevy = { version = "0.10.0", features = ["serialize"] }
+bevy = { version = "0.10.0", features = ["serialize", "tonemapping_luts"] }
 # physics engine
 rapier3d = { version = "0.17.2", features = ["simd-nightly", "parallel"] }
 nalgebra = { version = "*", features = ["convert-glam023"] } # bevy use glam 0.2.3

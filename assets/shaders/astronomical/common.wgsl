@@ -4,8 +4,6 @@
 
 #import noise::prelude
 
-const HIRES_LUMINOSITY_FACTOR = 16.0;
-
 fn astro_surface_noise(position: vec3<f32>, time: f32) -> f32 {
     let v = vec4(position, time);
 
@@ -22,7 +20,8 @@ fn astro_surface_noise(position: vec3<f32>, time: f32) -> f32 {
         ampl *= gain;
     }
 
-    return sin(res * 3.141592654 / 2.0);
+    res = 0.5 + res * 0.5;
+    return 80.0 * pow(res, 3.0);
 }
 
 fn astro_kelvin_to_rgb(t: f32) -> vec3<f32> {
